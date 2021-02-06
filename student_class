@@ -131,3 +131,39 @@ class stud
 	    a=f.tellg();
      } 
   }
+
+
+
+
+
+void stud::findbatch()
+   {  char n[10];
+   
+     ifstream sifile;
+     ifstream bifile;
+       sifile.open("stud.dat");
+	   bifile.open("batch.dat");
+	   sifile.seekg(0,ios::beg);
+	   bifile.seekg(0,ios::beg);
+	  
+	      bifile.read((char*)&b1,sizeof b1);
+	      sifile.read((char*)&s1,sizeof s1);
+	  
+	  while(sifile)
+	  { 
+	     while(bifile)
+	           {  
+		   if(s1.marks>=b1.cutoff)
+		       { strcpy(s1.bname,b1.name);
+			     break; }
+			   
+			   bifile.read((char*)&b1,sizeof b1);
+	            } 
+		 
+		 disp();
+	     sifile.read((char*)&s1,sizeof s1);
+	  }
+	     
+	    sifile.close();
+	    bifile.close();
+ }
