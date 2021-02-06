@@ -1,0 +1,134 @@
+class batch
+ {
+   public:
+  	int cutoff; 
+  	 char name[10];
+    void get();
+    void disp();
+	void wtf();
+	void rff();
+	void search(); 
+	void del();
+	void mod();
+ }b1; 
+  
+void batch::get()
+	{ cout<<"enter name and cutoff";
+	  cin>>name>>cutoff; }
+	
+ void batch::disp()
+	{ cout<<"name:"<<name<<" "<<"cutoff:"<<cutoff<<"\n"; }
+	
+ void batch::wtf()
+	{ ofstream ofile;
+	  ofile.open("batch.dat",ios::app);
+	   get();
+	   ofile.write((char*)&b1,sizeof b1);
+	   ofile.close(); 
+	}
+
+ void batch::rff()
+	{ ifstream ifile;
+	  ifile.open("batch.dat");
+	  ifile.seekg(0,ios::beg);
+	   ifile.read((char*)&b1,sizeof b1);
+	   
+	   while(ifile)
+	     { disp();
+	        ifile.read((char*)&b1,sizeof b1);  }
+	   
+	   ifile.close();
+	}
+	
+ void batch::search()
+   { char a[10];
+   
+	  ifstream ifile;
+	  ifile.open("batch.dat");
+   
+     cout<<"enter name of batch: ";
+     cin>>a;
+     
+     while(ifile)
+	     {  ifile.read((char*)&b1,sizeof b1);
+		   if(strcmpi(a,b1.name)==0)
+		      { disp();
+			    break; }
+	     }
+	       ifile.close();
+	} 
+	
+ void batch::del()
+   { char b[10];
+      
+     ofstream ofile;
+	 ifstream ifile;
+	  ifile.open("batch.dat");
+	  ofile.open("batch2.dat",ios::app);
+	  ifile.read((char*)&b1,sizeof (b1));
+	  
+	  cout<<"enter name of batch: ";
+      cin>>b;
+	  
+	  while(ifile)
+	  {  if(strcmpi(b,b1.name)!=0) 
+	         ofile.write((char*)&b1,sizeof b1); 
+	         
+			 ifile.read((char*)&b1,sizeof b1);
+	  }
+	   
+	       ofile.close();
+	       ifile.close();
+	       remove("batch.dat");
+	       rename("batch2.dat","batch.dat");
+   }
+   
+ void batch::mod()
+  { char name[20];
+    int x;
+    
+    fstream f;
+    f.open("batch.dat",ios::in|ios::out);
+    cout<<"enter batch name:";
+    cin>>name;
+    f.read((char*)&b1,sizeof (b1));
+    int a=f.tellg();
+	
+	while(!f.eof())
+	  { if(strcmpi(b1.name,name)==0)
+	        { cout<<"choose \n1 to modify name\n2 to modify cutoff\n3 to modify both\n";
+	          cin>>x;
+	          
+	          switch(x)
+	            { 
+	              case 1:
+	              	{ cout<<"new batch name:";
+	              	  cin>>b1.name;
+	              	  f.seekp(a-sizeof b1,ios::beg);
+	              	  f.write((char*)&b1,sizeof b1);
+	              	  break;
+					}
+					
+				  case 2:
+	              	{ cout<<"new cutoff:";
+	              	  cin>>b1.cutoff;
+	              	  f.seekp(a-sizeof b1,ios::beg);
+	              	  f.write((char*)&b1,sizeof b1);
+	              	  break;
+					}
+					
+				  case 3:
+	              	{ b1.get();
+	              	  f.seekp(a-sizeof b1,ios::beg);
+	              	  f.write((char*)&b1,sizeof b1);
+	              	  break;
+					}
+					
+				  default: cout<<"wrong choise";
+				}
+			}
+			
+	    f.read((char*)&b1,sizeof (b1));
+	    a=f.tellg();
+     } 
+  }
