@@ -1,0 +1,133 @@
+class stud
+ { char name[20];
+   int marks; 
+   char bname[10];
+	
+  public:
+  	
+    void get();
+    void disp();
+	void wtf();
+	void rff();
+	void search(); 
+	void del();
+	void mod();
+	void findbatch();	
+ }s1;
+  
+ void stud::get()
+	{ cout<<"enter student name and marks";
+	  cin>>name>>marks;  }
+	
+
+ void stud::disp()
+	{ cout<<"student name:"<<name<<"  "<<"marks:"<<marks<<"  "<<"batch:"<<s1.bname<<"\n";	 }
+ void stud::wtf()
+	{ ofstream ofile;
+	  ofile.open("stud.dat",ios::app);
+	   get();
+	   ofile.write((char*)&s1,sizeof s1);
+	   ofile.close(); 
+	}
+
+ void stud::rff()
+	{ ifstream ifile;
+	  ifile.open("stud.dat");
+	  ifile.seekg(0,ios::beg);
+	   ifile.read((char*)&s1,sizeof (s1));
+	   
+	   while(ifile)
+	      {  ifile.read((char*)&s1,sizeof (s1));   }
+	   
+	   ifile.close();
+	}
+	
+ void stud::search()
+   { char a[10];
+   
+	  ifstream ifile;
+	  ifile.open("stud.dat");
+   
+     cout<<"enter name of student: ";
+     cin>>a;
+     
+     while(ifile)
+	     {  ifile.read((char*)&s1,sizeof (s1));
+		   if(strcmpi(a,s1.name)==0)
+		      { disp(); }
+	     }
+	       ifile.close();
+	} 
+	
+ void stud::del()
+   { char b[10];
+      
+     ofstream ofile;
+	 ifstream ifile;
+	  ifile.open("stud.dat");
+	  ofile.open("stud2.dat",ios::app);
+	  ifile.read((char*)&s1,sizeof (s1));
+	  
+	  cout<<"enter name of student: ";
+                 cin>>b;
+	  
+	  while(ifile)
+	  {  if(strcmpi(b,s1.name)!=0) 
+	       { ofile.write((char*)&s1,sizeof s1); }
+	       ifile.read((char*)&s1,sizeof (s1));
+	  }
+	   
+	       ofile.close();
+	       ifile.close();
+	       remove("stud.dat");
+	       rename("stud2.dat","stud.dat");
+   }
+   
+ void stud::mod()
+  { char name[20];
+    int x;
+    
+    fstream f;
+    f.open("stud.dat",ios::in|ios::out);
+    
+	cout<<"enter student name:";
+               cin>>name;
+    
+    f.read((char*)&s1,sizeof (s1));
+    int a=f.tellg();
+	
+	while(!f.eof())
+	  { if(strcmpi(s1.name,name)==0)
+	        { cout<<"choose \n1 to modify name\n2 to modify marks\n3 to modify both\n";
+	          cin>>x;
+	          
+	          switch(x)
+	            { 
+	              case 1:
+	              	{ cout<<"new student name:";
+	              	  cin>>s1.name;
+	              	  f.seekp(a-sizeof s1,ios::beg);
+	              	  f.write((char*)&s1,sizeof s1);
+	              	  break;   }
+					
+		  case 2:
+	              	{ cout<<"new marks:";
+	              	  cin>>s1.marks;
+	              	  f.seekp(a-sizeof s1,ios::beg);
+	              	  f.write((char*)&s1,sizeof s1);
+	              	  break; }
+					
+		  case 3:
+	              	{ s1.get();
+	              	  f.seekp(a-sizeof s1,ios::beg);
+	              	  f.write((char*)&s1,sizeof s1);
+	              	  break;  }
+					
+		 default: cout<<"wrong choise";
+		}
+	}
+			
+	    f.read((char*)&s1,sizeof (s1));
+	    a=f.tellg();
+     } 
+  }
